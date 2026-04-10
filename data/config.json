@@ -20,13 +20,13 @@
       "H": 3
     },
     "maxDistance": 30,
-    "fallbackThreshold": 60
+    "fallbackThreshold": 35
   },
   "display": {
     "title": "爪格实验室｜给宠物做狗格/猫格测试",
     "subtitle": "先选你家孩子是猫还是狗，再通过更完整的行为题，测出TA最有戏的宠格人格。",
     "cta": "开始给TA测爪格",
-    "introNote": "这版重做了题目分类和结果文案，减少重复题，让结果更像一份会让主人上头的宠物小传。",
+    "introNote": "上传宠物照片后，最终结果卡可直接截图分享。图片只在本地浏览器处理，不会上传服务器。",
     "resultSectionTitle": "你家孩子的人格画像",
     "radarTitle": "15维狗格/猫格雷达",
     "topListTitle": "最像你家孩子的 TOP 5 毛孩子类型",

@@ -63,7 +63,7 @@ async function init() {
     const dimOrder = activeQuestions.map((q) => q.dim)
     const scores = calcDimensionScores(answers, activeQuestions)
     const levels = scoresToLevels(scores, config.scoring.levelThresholds)
-    const result = determineResult(levels, dimOrder, types.standard, types.special, { isDrunk, species: selectedSpecies })
+    const result = determineResult(levels, dimOrder, types.standard, types.special, { isDrunk, species: selectedSpecies, fallbackThreshold: config.scoring.fallbackThreshold })
     renderResult(result, levels, dimOrder, dimensions.definitions, config)
     showPage('result')
   }

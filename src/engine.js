@@ -94,6 +94,7 @@ export function determineResult(userLevels, dimOrder, standardTypes, specialType
   const best = rankings[0]
   const drunk = specialTypes.find((t) => t.code === 'SPIN' && (t.species === species || t.species === 'mixed'))
   const hhhh = specialTypes.find((t) => t.code === 'MIXI')
+  const fallbackThreshold = options.fallbackThreshold ?? 35
 
   // 酒鬼覆盖
   if (options.isDrunk && drunk) {
@@ -106,7 +107,7 @@ export function determineResult(userLevels, dimOrder, standardTypes, specialType
   }
 
   // 傻乐者兜底
-  if (best && best.similarity < 60 && hhhh) {
+  if (best && best.similarity < fallbackThreshold && hhhh) {
     return {
       primary: { ...hhhh, similarity: best.similarity, exact: best.exact },
       secondary: best,

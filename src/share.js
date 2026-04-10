@@ -28,11 +28,27 @@ export async function generateShareImage(primary, userLevels, dimOrder, dimDefs,
   ctx.fill()
 
   let y = cardY + 48
+
+  const petPhotoUrl = window.__PET_PHOTO_URL__
   ctx.textAlign = 'center'
   ctx.font = '700 20px system-ui, "PingFang SC", "Microsoft YaHei", sans-serif'
   ctx.fillStyle = '#d97757'
   ctx.fillText('🐾 爪格实验室', W / 2, y)
   y += 42
+
+  if (petPhotoUrl) {
+    const img = await loadImage(petPhotoUrl)
+    const imgW = 180
+    const imgH = 180
+    const imgX = (W - imgW) / 2
+    const imgY = y
+    roundRect(ctx, imgX, imgY, imgW, imgH, 24)
+    ctx.save()
+    ctx.clip()
+    ctx.drawImage(img, imgX, imgY, imgW, imgH)
+    ctx.restore()
+    y += 210
+  }
 
   ctx.font = '400 22px system-ui, "PingFang SC", "Microsoft YaHei", sans-serif'
   ctx.fillStyle = '#8a6f67'
@@ -217,4 +233,14 @@ function wrapText(ctx, text, maxWidth) {
   }
   if (line) lines.push(line)
   return lines
+}
+
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => resolve(img)
+    img.onerror = reject
+    img.src = src
+  })
 }

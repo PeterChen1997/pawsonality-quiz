@@ -66,6 +66,7 @@ export function renderResult(result, userLevels, dimOrder, dimDefs, config) {
   })
 
   document.getElementById('disclaimer').textContent = mode === 'normal' ? display.funNote : display.funNoteSpecial
+  bindPhotoUploader()
 
   document.getElementById('btn-download').onclick = () => {
     generateShareImage(primary, userLevels, dimOrder, dimDefs, mode, config)
@@ -77,5 +78,21 @@ export function renderResult(result, userLevels, dimOrder, dimDefs, config) {
       btnAgent.textContent = '已复制!'
       setTimeout(() => { btnAgent.textContent = '复制一键部署命令' }, 2000)
     })
+  }
+}
+
+
+function bindPhotoUploader() {
+  const input = document.getElementById('pet-photo-input')
+  const preview = document.getElementById('pet-photo-preview')
+  if (!input || !preview) return
+
+  input.onchange = () => {
+    const file = input.files?.[0]
+    if (!file) return
+    const url = URL.createObjectURL(file)
+    preview.src = url
+    preview.style.display = 'block'
+    window.__PET_PHOTO_URL__ = url
   }
 }
