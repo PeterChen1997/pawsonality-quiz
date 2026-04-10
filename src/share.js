@@ -45,7 +45,19 @@ export async function generateShareImage(primary, userLevels, dimOrder, dimDefs,
     roundRect(ctx, imgX, imgY, imgW, imgH, 24)
     ctx.save()
     ctx.clip()
-    ctx.drawImage(img, imgX, imgY, imgW, imgH)
+    const sw = img.width
+    const sh = img.height
+    const targetRatio = imgW / imgH
+    const sourceRatio = sw / sh
+    let sx = 0, sy = 0, sWidth = sw, sHeight = sh
+    if (sourceRatio > targetRatio) {
+      sWidth = sh * targetRatio
+      sx = (sw - sWidth) / 2
+    } else {
+      sHeight = sw / targetRatio
+      sy = (sh - sHeight) / 2
+    }
+    ctx.drawImage(img, sx, sy, sWidth, sHeight, imgX, imgY, imgW, imgH)
     ctx.restore()
     y += 210
   }

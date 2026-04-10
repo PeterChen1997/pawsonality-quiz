@@ -230,4 +230,4 @@ a:hover { text-decoration: underline; }
 .upload-label { display:block; font-weight:700; margin-bottom:8px; }
 #pet-photo-input { display:block; width:100%; margin: 0 auto 8px; }
 .upload-hint { font-size:.78rem; color:var(--text-secondary); }
-.pet-photo-preview { width:120px; height:120px; object-fit:cover; border-radius:16px; margin:12px auto 0; border:1px solid var(--border); }
+.pet-photo-preview { width:120px; height:120px; object-fit:cover; object-position:center; border-radius:16px; margin:12px auto 0; border:1px solid var(--border); display:block; }
