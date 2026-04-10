@@ -66,7 +66,8 @@ export function matchType(userLevels, dimOrder, pattern) {
     if (diff === 0) exact++
   }
 
-  const similarity = Math.max(0, Math.round((1 - distance / 30) * 100))
+  const maxDistance = dimOrder.length * 2
+  const similarity = Math.max(0, Math.round((1 - distance / maxDistance) * 100))
   return { distance, exact, similarity }
 }
 
@@ -80,7 +81,9 @@ export function matchType(userLevels, dimOrder, pattern) {
  * @returns {{ primary: Object, secondary: Object|null, rankings: Array, mode: string }}
  */
 export function determineResult(userLevels, dimOrder, standardTypes, specialTypes, options = {}) {
-  const rankings = standardTypes.map((type) => ({
+  const species = options.species || 'mixed'
+  const filteredStandards = standardTypes.filter((type) => type.species === species || type.species === 'mixed')
+  const rankings = filteredStandards.map((type) => ({
     ...type,
     ...matchType(userLevels, dimOrder, type.pattern),
   }))
@@ -89,7 +92,7 @@ export function determineResult(userLevels, dimOrder, standardTypes, specialType
   rankings.sort((a, b) => a.distance - b.distance || b.exact - a.exact || b.similarity - a.similarity)
 
   const best = rankings[0]
-  const drunk = specialTypes.find((t) => t.code === 'SPIN')
+  const drunk = specialTypes.find((t) => t.code === 'SPIN' && (t.species === species || t.species === 'mixed'))
   const hhhh = specialTypes.find((t) => t.code === 'MIXI')
 
   // 酒鬼覆盖
@@ -103,7 +106,7 @@ export function determineResult(userLevels, dimOrder, standardTypes, specialType
   }
 
   // 傻乐者兜底
-  if (best.similarity < 60 && hhhh) {
+  if (best && best.similarity < 60 && hhhh) {
     return {
       primary: { ...hhhh, similarity: best.similarity, exact: best.exact },
       secondary: best,

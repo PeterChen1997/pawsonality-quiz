@@ -56,15 +56,30 @@ async function init() {
     window.scrollTo(0, 0)
   }
 
+  let selectedSpecies = 'dog'
+
   function onQuizComplete(answers, isDrunk) {
-    const scores = calcDimensionScores(answers, questions.main)
+    const activeQuestions = questions.main
+    const dimOrder = activeQuestions.map((q) => q.dim)
+    const scores = calcDimensionScores(answers, activeQuestions)
     const levels = scoresToLevels(scores, config.scoring.levelThresholds)
-    const result = determineResult(levels, dimensions.order, types.standard, types.special, { isDrunk })
-    renderResult(result, levels, dimensions.order, dimensions.definitions, config)
+    const result = determineResult(levels, dimOrder, types.standard, types.special, { isDrunk, species: selectedSpecies })
+    renderResult(result, levels, dimOrder, dimensions.definitions, config)
     showPage('result')
   }
 
   const quiz = createQuiz(questions, config, onQuizComplete)
+
+  const startBtn = document.getElementById('btn-start')
+  const speciesButtons = document.querySelectorAll('[data-species]')
+  speciesButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      speciesButtons.forEach((b) => b.classList.remove('is-selected'))
+      btn.classList.add('is-selected')
+      selectedSpecies = btn.dataset.species
+      startBtn.textContent = selectedSpecies === 'cat' ? '开始给猫猫测爪格' : '开始给狗狗测爪格'
+    })
+  })
 
   document.getElementById('btn-start').addEventListener('click', () => {
     quiz.start()
