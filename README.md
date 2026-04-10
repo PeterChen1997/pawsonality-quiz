@@ -1,10 +1,10 @@
 # Pawsonality Quiz · 爪格实验室
 
-一个基于 [pingfanfan/SBTI](https://github.com/pingfanfan/SBTI) 二次开发的开源前端项目：把原本的娱乐人格测试，重构成更适合中文互联网传播的 **宠物 MBTI / 狗格测试 / 猫格测试** 品牌化落地页。
+一个基于 [pingfanfan/SBTI](https://github.com/PeterChen1997/pawsonality-quiz) 二次开发的开源前端项目：把原本的娱乐人格测试，重构成更适合中文互联网传播的 **宠物 MBTI / 狗格测试 / 猫格测试** 品牌化落地页。
 
 当前默认品牌设定：
 - 品牌名：**爪格实验室**
-- 主理人露出：**由 女主人 / 卢欣 主理**（可在 `data/config.json` 修改）
+- 主理人露出：**由 鲁西西 主理**（可在 `data/config.json` 修改）
 - 场景：小红书、朋友圈、社群裂变、轻测试引流、宠物品牌/博主人设验证
 
 ## 在线方向
@@ -95,7 +95,7 @@ npm run build
 ## 来源说明
 
 - 源码来源：基于 `pingfanfan/SBTI` 二次开发
-- 原仓库：<https://github.com/pingfanfan/SBTI>
+- 原仓库：<https://github.com/PeterChen1997/pawsonality-quiz>
 - 原项目协议：MIT
 
 ## License
