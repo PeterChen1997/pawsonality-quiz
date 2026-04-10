@@ -4,45 +4,34 @@ import { generateShareImage } from './share.js'
 const LEVEL_LABEL = { L: '低', M: '中', H: '高' }
 const LEVEL_CLASS = { L: 'level-low', M: 'level-mid', H: 'level-high' }
 
-/**
- * 渲染测试结果
- */
 export function renderResult(result, userLevels, dimOrder, dimDefs, config) {
   const { primary, secondary, rankings, mode } = result
+  const { display, quiz } = config
 
-  // Kicker
   const kicker = document.getElementById('result-kicker')
-  if (mode === 'drunk') kicker.textContent = '隐藏人格已激活'
-  else if (mode === 'fallback') kicker.textContent = '系统强制兜底'
-  else kicker.textContent = '你的主类型'
+  if (mode === 'drunk') kicker.textContent = quiz.specialKicker
+  else if (mode === 'fallback') kicker.textContent = quiz.fallbackKicker
+  else kicker.textContent = quiz.normalKicker
 
-  // 主类型
   document.getElementById('result-code').textContent = primary.code
   document.getElementById('result-name').textContent = primary.cn
-
-  // 匹配度
   document.getElementById('result-badge').textContent =
     `匹配度 ${primary.similarity}%` + (primary.exact != null ? ` · 精准命中 ${primary.exact}/15 维` : '')
-
-  // Intro & 描述
   document.getElementById('result-intro').textContent = primary.intro || ''
   document.getElementById('result-desc').textContent = primary.desc || ''
+  document.getElementById('secondary-label').textContent = quiz.secondaryLabel
 
-  // 次要匹配
   const secEl = document.getElementById('result-secondary')
   if (secondary && (mode === 'drunk' || mode === 'fallback')) {
     secEl.style.display = ''
-    document.getElementById('secondary-info').textContent =
-      `${secondary.code}（${secondary.cn}）· 匹配度 ${secondary.similarity}%`
+    document.getElementById('secondary-info').textContent = `${secondary.code}（${secondary.cn}）· 匹配度 ${secondary.similarity}%`
   } else {
     secEl.style.display = 'none'
   }
 
-  // 雷达图
   const canvas = document.getElementById('radar-chart')
   drawRadar(canvas, userLevels, dimOrder, dimDefs)
 
-  // 维度详情
   const detailEl = document.getElementById('dimensions-detail')
   detailEl.innerHTML = ''
   for (const dim of dimOrder) {
@@ -62,11 +51,9 @@ export function renderResult(result, userLevels, dimOrder, dimDefs, config) {
     detailEl.appendChild(row)
   }
 
-  // TOP 5
   const topEl = document.getElementById('top-list')
   topEl.innerHTML = ''
-  const top5 = rankings.slice(0, 5)
-  top5.forEach((t, i) => {
+  rankings.slice(0, 5).forEach((t, i) => {
     const item = document.createElement('div')
     item.className = 'top-item'
     item.innerHTML = `
@@ -78,21 +65,15 @@ export function renderResult(result, userLevels, dimOrder, dimDefs, config) {
     topEl.appendChild(item)
   })
 
-  // 免责声明
-  document.getElementById('disclaimer').textContent =
-    mode === 'normal' ? config.display.funNote : config.display.funNoteSpecial
+  document.getElementById('disclaimer').textContent = mode === 'normal' ? display.funNote : display.funNoteSpecial
 
-  // 下载分享图
-  const btnDownload = document.getElementById('btn-download')
-  btnDownload.onclick = () => {
-    generateShareImage(primary, userLevels, dimOrder, dimDefs, mode)
+  document.getElementById('btn-download').onclick = () => {
+    generateShareImage(primary, userLevels, dimOrder, dimDefs, mode, config)
   }
 
-  // 复制 AI Agent 命令
   const btnAgent = document.getElementById('btn-agent')
   btnAgent.onclick = () => {
-    const cmd = `git clone https://github.com/pingfanfan/SBTI.git && cd SBTI && npm install && npm run dev`
-    navigator.clipboard.writeText(cmd).then(() => {
+    navigator.clipboard.writeText(display.deployCommand).then(() => {
       btnAgent.textContent = '已复制!'
       setTimeout(() => { btnAgent.textContent = '复制一键部署命令' }, 2000)
     })

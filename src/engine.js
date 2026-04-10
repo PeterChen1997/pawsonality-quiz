@@ -1,5 +1,5 @@
 /**
- * SBTI 评分引擎 — 纯函数，无 DOM 依赖
+ * 爪格实验室评分引擎 — 纯函数，无 DOM 依赖
  */
 
 /**
@@ -89,8 +89,8 @@ export function determineResult(userLevels, dimOrder, standardTypes, specialType
   rankings.sort((a, b) => a.distance - b.distance || b.exact - a.exact || b.similarity - a.similarity)
 
   const best = rankings[0]
-  const drunk = specialTypes.find((t) => t.code === 'DRUNK')
-  const hhhh = specialTypes.find((t) => t.code === 'HHHH')
+  const drunk = specialTypes.find((t) => t.code === 'SPIN')
+  const hhhh = specialTypes.find((t) => t.code === 'MIXI')
 
   // 酒鬼覆盖
   if (options.isDrunk && drunk) {

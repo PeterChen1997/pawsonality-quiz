@@ -8,6 +8,32 @@ async function loadJSON(path) {
   return res.json()
 }
 
+function applyBranding(config) {
+  const { display } = config
+  document.title = display.title
+
+  const descMeta = document.querySelector('meta[name="description"]')
+  if (descMeta) descMeta.setAttribute('content', display.subtitle)
+
+  document.getElementById('intro-title').textContent = display.title
+  document.getElementById('intro-subtitle').textContent = display.subtitle
+  document.getElementById('btn-start').textContent = display.cta
+  document.getElementById('intro-note').textContent = display.introNote
+  document.getElementById('intro-owner').textContent = display.ownerLabel
+  document.getElementById('deploy-command').textContent = display.deployCommand
+  document.getElementById('deploy-hint').textContent = display.deployHint
+
+  ;['intro-source', 'result-source'].forEach((id) => {
+    const el = document.getElementById(id)
+    el.textContent = display.source
+    el.href = display.sourceUrl
+  })
+
+  document.getElementById('result-owner').textContent = display.ownerLabel
+  document.getElementById('radar-title').textContent = display.radarTitle
+  document.getElementById('top-title').textContent = display.topListTitle
+}
+
 async function init() {
   const [questions, dimensions, types, config] = await Promise.all([
     loadJSON(new URL('../data/questions.json', import.meta.url).href),
@@ -15,6 +41,8 @@ async function init() {
     loadJSON(new URL('../data/types.json', import.meta.url).href),
     loadJSON(new URL('../data/config.json', import.meta.url).href),
   ])
+
+  applyBranding(config)
 
   const pages = {
     intro: document.getElementById('page-intro'),
