@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff8f2"/>
+      <stop offset="100%" stop-color="#fff2ea"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect x="40" y="40" width="1120" height="550" rx="28" fill="#fff" stroke="#f0d9cf" stroke-width="1"/>
+  <!-- Paw emoji -->
+  <text x="600" y="200" text-anchor="middle" font-size="80">🐾</text>
+  <!-- Title -->
+  <text x="600" y="300" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="52" font-weight="900" fill="#3f2e2a">爪格实验室</text>
+  <!-- Subtitle -->
+  <text x="600" y="370" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="28" font-weight="500" fill="#8a6f67">给你家毛孩子做一次狗格 / 猫格测试</text>
+  <!-- CTA -->
+  <rect x="420" y="420" width="360" height="56" rx="28" fill="#8f4f3f"/>
+  <text x="600" y="456" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="22" font-weight="700" fill="#fff">12 道短测 · 立即开始</text>
+  <!-- Footer -->
+  <text x="600" y="545" text-anchor="middle" font-family="PingFang SC, Microsoft YaHei, sans-serif" font-size="18" fill="#b4998f">宠物人格测试 · 基于 SBTI 二次开发</text>
+</svg>

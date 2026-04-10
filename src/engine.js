@@ -2,48 +2,82 @@
  * 爪格实验室评分引擎 — 纯函数，无 DOM 依赖
  */
 
+const LEVEL_NUM = { L: 1, M: 2, H: 3 }
+
 /**
- * 按维度求和：每维度 2 题，分值相加 (范围 2-6)
- * @param {Object} answers  { q1: 2, q3: 1, ... }
- * @param {Array}  questions 题目定义数组
- * @returns {Object} { S1: 5, S2: 3, ... }
+ * 按维度求平均分：每道题可同时影响多个维度
+ * @param {Object} answers  { dog_q01: 2, dog_q02: 3, ... }
+ * @param {Array} questions 当前物种的主问题库
+ * @param {Array} dimOrder  固定维度顺序
+ * @returns {Object} { S1: 2.33, S2: 1.67, ... }
  */
-export function calcDimensionScores(answers, questions) {
-  const scores = {}
+export function calcDimensionScores(answers, questions, dimOrder = []) {
+  const sums = Object.fromEntries(dimOrder.map((dim) => [dim, 0]))
+  const counts = Object.fromEntries(dimOrder.map((dim) => [dim, 0]))
+
   for (const q of questions) {
-    if (answers[q.id] == null) continue
-    scores[q.dim] = (scores[q.dim] || 0) + answers[q.id]
+    const selectedValue = answers[q.id]
+    if (selectedValue == null) continue
+
+    const selectedOption = q.options.find((option) => option.value === selectedValue)
+    if (!selectedOption?.effects) continue
+
+    for (const [dim, score] of Object.entries(selectedOption.effects)) {
+      sums[dim] = (sums[dim] || 0) + score
+      counts[dim] = (counts[dim] || 0) + 1
+    }
   }
-  return scores
+
+  return Object.fromEntries(dimOrder.map((dim) => {
+    if (!counts[dim]) return [dim, 2]
+    return [dim, Number((sums[dim] / counts[dim]).toFixed(4))]
+  }))
 }
 
 /**
  * 原始分 → L/M/H 等级
- * @param {Object} scores      { S1: 5, ... }
- * @param {Object} thresholds  { L: [2,3], M: [4,4], H: [5,6] }
+ * @param {Object} scores      { S1: 2.33, ... }
+ * @param {Object} thresholds  { L: [1,1.67], M: [1.68,2.33], H: [2.34,3] }
+ * @param {Array}  dimOrder    维度顺序
  * @returns {Object} { S1: 'H', S2: 'L', ... }
  */
-export function scoresToLevels(scores, thresholds) {
+export function scoresToLevels(scores, thresholds, dimOrder = []) {
   const levels = {}
-  for (const [dim, score] of Object.entries(scores)) {
-    if (score <= thresholds.L[1]) levels[dim] = 'L'
-    else if (score >= thresholds.H[0]) levels[dim] = 'H'
-    else levels[dim] = 'M'
+
+  for (const dim of dimOrder) {
+    const score = scores[dim]
+
+    if (score == null) {
+      levels[dim] = 'M'
+    } else if (score <= thresholds.L[1]) {
+      levels[dim] = 'L'
+    } else if (score >= thresholds.H[0]) {
+      levels[dim] = 'H'
+    } else {
+      levels[dim] = 'M'
+    }
   }
+
   return levels
 }
 
 /**
- * 等级 → 数值 (L=1, M=2, H=3)
- */
-const LEVEL_NUM = { L: 1, M: 2, H: 3 }
-
-/**
  * 解析人格类型的 pattern 字符串
- * "HHH-HMH-MHH-HHH-MHM" → ['H','H','H','H','M','H','M','H','H','H','H','H','M','H','M']
+ * "HHH-HMH-MHH-HHH-MHM" → ['H','H','H','H','M','H',...]
  */
 export function parsePattern(pattern) {
   return pattern.replace(/-/g, '').split('')
+}
+
+/**
+ * pattern 字符串转维度等级对象
+ * @param {string} pattern
+ * @param {Array} dimOrder
+ * @returns {Object}
+ */
+export function patternToLevels(pattern, dimOrder) {
+  const chars = parsePattern(pattern)
+  return Object.fromEntries(dimOrder.map((dim, index) => [dim, chars[index] || 'M']))
 }
 
 /**
@@ -72,44 +106,44 @@ export function matchType(userLevels, dimOrder, pattern) {
 }
 
 /**
- * 匹配所有类型，排序，应用特殊覆盖
- * @param {Object}  userLevels   { S1: 'H', ... }
- * @param {Array}   dimOrder     维度顺序
- * @param {Array}   standardTypes 标准类型数组
- * @param {Array}   specialTypes  特殊类型数组
- * @param {Object}  options      { isDrunk: boolean }
+ * 匹配所有类型，排序，应用隐藏人格与混合人格
+ * @param {Object} userLevels        { S1: 'H', ... }
+ * @param {Array}  dimOrder          维度顺序
+ * @param {Object} typeLibrary       { standard: [...], special: [...] }
+ * @param {Array}  sharedSpecials    共享特殊类型
+ * @param {Object} options           { specialResultCode, fallbackThreshold }
  * @returns {{ primary: Object, secondary: Object|null, rankings: Array, mode: string }}
  */
-export function determineResult(userLevels, dimOrder, standardTypes, specialTypes, options = {}) {
-  const species = options.species || 'mixed'
-  const filteredStandards = standardTypes.filter((type) => type.species === species || type.species === 'mixed')
-  const rankings = filteredStandards.map((type) => ({
+export function determineResult(userLevels, dimOrder, typeLibrary, sharedSpecials = [], options = {}) {
+  const standardTypes = typeLibrary?.standard || []
+  const specialTypes = [...(typeLibrary?.special || []), ...sharedSpecials]
+  const fallbackThreshold = options.fallbackThreshold ?? 66
+
+  const rankings = standardTypes.map((type) => ({
     ...type,
     ...matchType(userLevels, dimOrder, type.pattern),
   }))
 
-  // 排序：距离升序 → 精准命中降序 → 相似度降序
   rankings.sort((a, b) => a.distance - b.distance || b.exact - a.exact || b.similarity - a.similarity)
 
-  const best = rankings[0]
-  const drunk = specialTypes.find((t) => t.code === 'SPIN' && (t.species === species || t.species === 'mixed'))
-  const hhhh = specialTypes.find((t) => t.code === 'MIXI')
-  const fallbackThreshold = options.fallbackThreshold ?? 35
+  const best = rankings[0] || null
+  const fallback = specialTypes.find((type) => type.code === 'MIXI') || null
 
-  // 酒鬼覆盖
-  if (options.isDrunk && drunk) {
-    return {
-      primary: { ...drunk, similarity: best.similarity, exact: best.exact },
-      secondary: best,
-      rankings,
-      mode: 'drunk',
+  if (options.specialResultCode && best) {
+    const special = specialTypes.find((type) => type.code === options.specialResultCode)
+    if (special) {
+      return {
+        primary: { ...special, similarity: best.similarity, exact: best.exact },
+        secondary: best,
+        rankings,
+        mode: 'special',
+      }
     }
   }
 
-  // 傻乐者兜底
-  if (best && best.similarity < fallbackThreshold && hhhh) {
+  if (best && fallback && best.similarity < fallbackThreshold) {
     return {
-      primary: { ...hhhh, similarity: best.similarity, exact: best.exact },
+      primary: { ...fallback, similarity: best.similarity, exact: best.exact },
       secondary: best,
       rankings,
       mode: 'fallback',

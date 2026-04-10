@@ -5,6 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>爪格实验室｜宠物人格测试</title>
   <meta name="description" content="根据你家宠物的日常行为、社交反应和黏人方式，测出它属于哪种狗格/猫格人格。" />
+  <!-- Open Graph / 朋友圈 + 群聊 -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="爪格实验室｜你家毛孩子是什么人格？" />
+  <meta property="og:description" content="12 道短测题，测出你家猫猫/狗狗的隐藏人格。结果可保存分享图，快来试试！" />
+  <meta property="og:image" content="https://pawsonality-quiz-peterchen.fly.dev/og.svg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="https://pawsonality-quiz-peterchen.fly.dev/" />
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="爪格实验室｜你家毛孩子是什么人格？" />
+  <meta name="twitter:description" content="12 道短测题，测出你家猫猫/狗狗的隐藏人格。" />
+  <meta name="twitter:image" content="https://pawsonality-quiz-peterchen.fly.dev/og.svg" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐾</text></svg>" />
   <link rel="stylesheet" href="/src/style.css" />
 </head>
@@ -20,6 +33,8 @@
           <button class="species-chip" data-species="cat">我是来测猫猫的</button>
         </div>
         <button id="btn-start" class="btn btn-primary">开始给TA测爪格</button>
+        <div class="intro-counter" id="intro-counter"></div>
+        <div class="intro-invite-banner" id="intro-invite-banner" style="display:none"></div>
         <p class="intro-note" id="intro-note"></p>
         <div class="intro-meta">
           <p class="intro-credit" id="intro-owner"></p>
@@ -31,7 +46,7 @@
     <section id="page-quiz" class="page">
       <div class="card quiz-card">
         <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-        <div class="progress-text" id="progress-text">0 / 31</div>
+        <div class="progress-text" id="progress-text">0 / 0</div>
         <div class="question-area"><p class="question-text" id="question-text"></p></div>
         <div class="options" id="options"></div>
       </div>
@@ -39,12 +54,36 @@
 
     <section id="page-result" class="page">
       <div class="card result-card" id="result-card">
+        <div class="compare-card" id="compare-card" style="display:none">
+          <div class="compare-label" id="compare-label"></div>
+          <div class="compare-row">
+            <div class="compare-col">
+              <div class="compare-who" id="compare-friend-label">朋友的宠物</div>
+              <div class="compare-code" id="compare-friend-code"></div>
+              <div class="compare-name" id="compare-friend-name"></div>
+            </div>
+            <div class="compare-vs">VS</div>
+            <div class="compare-col">
+              <div class="compare-who">你的宠物</div>
+              <div class="compare-code" id="compare-my-code"></div>
+              <div class="compare-name" id="compare-my-name"></div>
+            </div>
+          </div>
+        </div>
         <div class="result-kicker" id="result-kicker">你家毛孩子的本命人格</div>
+        <div class="result-rarity" id="result-rarity"></div>
         <div class="result-code" id="result-code"></div>
         <div class="result-name" id="result-name"></div>
+        <div class="result-subtitle" id="result-subtitle"></div>
+        <div class="result-tags" id="result-tags"></div>
         <div class="result-badge" id="result-badge"></div>
+        <div class="result-footnote" id="result-footnote"></div>
         <div class="result-intro" id="result-intro"></div>
         <div class="result-desc" id="result-desc"></div>
+        <div class="result-deep">
+          <h3 class="section-title">深层画像</h3>
+          <div class="result-deep-dive" id="result-deep-dive"></div>
+        </div>
 
         <div class="result-secondary" id="result-secondary" style="display:none">
           <div class="secondary-label" id="secondary-label">另一种很像你的毛孩子人格</div>
@@ -62,7 +101,7 @@
 
         
         <div class="photo-uploader">
-          <label class="upload-label" for="pet-photo-input">上传宠物照片生成专属分享图</label>
+          <label class="upload-label" id="upload-label" for="pet-photo-input">上传宠物照片生成专属分享图</label>
           <input id="pet-photo-input" type="file" accept="image/*" />
           <p class="upload-hint">仅在前端本地处理，不上传服务器</p>
           <img id="pet-photo-preview" class="pet-photo-preview" style="display:none" alt="宠物照片预览" />
@@ -77,8 +116,10 @@
 
         <div class="result-actions">
           <button id="btn-download" class="btn btn-primary">保存分享图片</button>
+          <button id="btn-invite" class="btn btn-invite">邀请TA也来测</button>
           <button id="btn-restart" class="btn btn-secondary">重新测试</button>
         </div>
+        <p class="retry-cta" id="retry-cta"></p>
 
         <div class="agent-section">
           <p class="agent-title">想自己搭一个宠物人格测试？</p>

@@ -1,18 +1,11 @@
 {
   "scoring": {
+    "targetQuestionCount": 12,
+    "minimumDimensionCoverage": 2,
     "levelThresholds": {
-      "L": [
-        1,
-        1
-      ],
-      "M": [
-        2,
-        2
-      ],
-      "H": [
-        3,
-        3
-      ]
+      "L": [1, 1.67],
+      "M": [1.68, 2.33],
+      "H": [2.34, 3]
     },
     "levelNumeric": {
       "L": 1,
@@ -20,21 +13,22 @@
       "H": 3
     },
     "maxDistance": 30,
-    "fallbackThreshold": 35
+    "fallbackThreshold": 66
   },
+  "siteUrl": "https://pawsonality-quiz-peterchen.fly.dev",
   "display": {
     "title": "爪格实验室｜给宠物做狗格/猫格测试",
-    "subtitle": "先选你家孩子是猫还是狗，再通过更完整的行为题，测出TA最有戏的宠格人格。",
+    "subtitle": "先选你家孩子是猫还是狗，再用 12 道短测题看出它更接近哪一种毛孩子人格。",
     "cta": "开始给TA测爪格",
     "introNote": "上传宠物照片后，最终结果卡可直接截图分享。图片只在本地浏览器处理，不会上传服务器。",
     "resultSectionTitle": "你家孩子的人格画像",
-    "radarTitle": "15维狗格/猫格雷达",
-    "topListTitle": "最像你家孩子的 TOP 5 毛孩子类型",
+    "radarTitle": "15维人格侧写",
+    "topListTitle": "最像TA的 TOP 5 人格",
     "source": "项目源码（基于 SBTI 二次开发）",
     "sourceUrl": "https://github.com/PeterChen1997/pawsonality-quiz",
     "ownerLabel": "由 鲁西西 主理",
-    "funNote": "本测试用于宠物人格娱乐定位与传播创意参考，不构成行为学诊断或训养建议。",
-    "funNoteSpecial": "本测试仅供娱乐与传播创意使用。隐藏人格与兜底人格是为了增强分享感，不代表专业诊断。",
+    "funNote": "本测试用于宠物人格娱乐定位与传播创意参考，不构成行为学诊断、训练建议或医学判断。",
+    "funNoteSpecial": "隐藏人格与混合人格用于增强分享感和故事性，不代表专业诊断结论。",
     "shareFooter": "爪格实验室 · 宠物人格测试",
     "deployCommand": "git clone https://github.com/PeterChen1997/pawsonality-quiz.git && cd pawsonality-quiz && npm install && npm run dev",
     "deployHint": "复制后即可本地跑起来，再按你的品牌继续改文案、封面和结果页。"
@@ -43,11 +37,12 @@
     "normalKicker": "你家毛孩子的本命人格",
     "specialKicker": "你家毛孩子触发了隐藏人格",
     "fallbackKicker": "系统为TA匹配了稀有混合人格",
-    "secondaryLabel": "另一种也很像你家孩子的毛孩子人格"
-  },
-  "drinkGate": {
-    "questionId": "drink_gate_q1",
-    "triggerValue": 3,
-    "drunkTriggerValue": 2
+    "secondaryLabel": "常规题库里最像TA的结果",
+    "sharePhotoLabel": "上传宠物照片生成专属分享图",
+    "inviteText": "邀请TA也来测",
+    "inviteCopiedText": "链接已复制！发给朋友吧",
+    "retryText": "觉得不太准？换个心态再测一次",
+    "compareTitle": "你们的爪格对比",
+    "friendResultLabel": "朋友的宠物"
   }
 }

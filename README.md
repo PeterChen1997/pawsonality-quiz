@@ -2,6 +2,12 @@
 
 一个基于 [pingfanfan/SBTI](https://github.com/PeterChen1997/pawsonality-quiz) 二次开发的开源前端项目：把原本的娱乐人格测试，重构成更适合中文互联网传播的 **宠物 MBTI / 狗格测试 / 猫格测试** 品牌化落地页。
 
+这一版已经把底层结构重做为：
+- 猫 / 狗双题库彻底拆开
+- 固定 15 维顺序 + 12 题短测的复合映射计分
+- 标准人格 / 隐藏人格 / 混合人格三层结果体系
+- 可运行的数据校验脚本，用来检查题库归属、pattern 长度和结果映射稳定性
+
 当前默认品牌设定：
 - 品牌名：**爪格实验室**
 - 主理人露出：**由 鲁西西 主理**（可在 `data/config.json` 修改）
@@ -26,9 +32,9 @@
 
 ### 内容层
 - 重写 15 个维度定义，改成更适合宠物人格叙事的表达
-- 重写 30 道题，去掉原项目里不适合品牌传播的表达，换成更轻盈、更适合女性向传播的中文互联网文案
-- 重写 25 个标准人格 + 2 个特殊人格
-- 结果类型改成狗狗 / 猫猫 / 混合系毛孩子人格命名
+- 拆成两套独立短测题库：狗狗 12 题、猫猫 12 题
+- 每个结果补全 `subtitle / footnote / deepDive / tags`
+- 结果类型改成狗格 / 猫格 / 混合系毛孩子人格命名
 
 ### 产品层
 - 首页支持动态品牌配置
@@ -42,8 +48,8 @@
 ├── data/
 │   ├── config.json       # 品牌配置、标题、主理人、免责声明、部署命令
 │   ├── dimensions.json   # 15个宠物人格维度
-│   ├── questions.json    # 题目与选项
-│   └── types.json        # 人格类型库
+│   ├── questions.json    # 猫 / 狗双题库与特殊题
+│   └── types.json        # 狗格 / 猫格 / 特殊人格结果库
 ├── src/
 │   ├── engine.js         # 匹配引擎
 │   ├── quiz.js           # 答题流程
@@ -51,6 +57,8 @@
 │   ├── share.js          # 分享图生成
 │   ├── main.js           # 入口 & 品牌配置注入
 │   └── style.css         # 品牌样式
+├── scripts/
+│   └── validate-data.mjs # 数据结构与 pattern 映射校验
 ├── index.html
 └── vite.config.js
 ```
@@ -63,6 +71,19 @@ cd pawsonality-quiz
 npm install
 npm run dev
 ```
+
+## 数据校验
+
+```bash
+npm run validate
+```
+
+会检查：
+- 15 维顺序和定义是否完整
+- 猫 / 狗题库是否各自满足 12 题与最低维度覆盖
+- 结果 code、pattern 长度、特殊人格引用是否有效
+- 每个标准人格的 exact pattern 是否会稳定命中自己
+- 结果库是否过度拥挤
 
 ## 构建
 
@@ -81,7 +102,7 @@ npm run build
    - `display.deployCommand`
    - `display.shareFooter`
 2. `data/types.json`
-   - 如果想更偏狗狗或猫猫，可继续微调人格名称与描述
+   - 如果想更偏狗狗或猫猫，可继续微调人格名称、code、短注脚和深层解释
 3. `src/style.css`
    - 改品牌主色
 
