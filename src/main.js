@@ -53,17 +53,21 @@ function resolveSpecialResultCode(answers, bank, fallbackSpecialCode = null) {
 /** 模拟计数器：小种子 + localStorage 缓慢增长 */
 function initCounter() {
   const SEED = 137
+  const VERSION = 2          // bump to reset all clients
   const KEY = 'paw_counter'
+  const KEY_VER = 'paw_counter_v'
   const KEY_TS = 'paw_counter_ts'
   const el = document.getElementById('intro-counter')
   if (!el) return
 
+  const savedVer = parseInt(localStorage.getItem(KEY_VER), 10)
   let stored = parseInt(localStorage.getItem(KEY), 10)
   const lastTs = parseInt(localStorage.getItem(KEY_TS), 10)
   const now = Date.now()
 
-  if (!stored || isNaN(stored)) {
+  if (!stored || isNaN(stored) || savedVer !== VERSION) {
     stored = SEED + Math.floor(Math.random() * 20)
+    localStorage.setItem(KEY_VER, String(VERSION))
   }
 
   // 每次访问 +1~2；如果距上次 >1 小时额外 +1~3
