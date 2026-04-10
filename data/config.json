@@ -14,27 +14,27 @@
     "fallbackThreshold": 60
   },
   "display": {
-    "title": "爪格实验室｜宠物 MBTI / 狗格测试 / 猫格测试",
-    "subtitle": "测一测你更像哪种毛孩子人格：小狗派、猫猫派，还是又甜又野的混合体？",
-    "cta": "开始测爪格",
-    "introNote": "3 分钟出结果，适合社媒裂变、互动引流、品牌验证。",
-    "resultSectionTitle": "你的宠物人格画像",
-    "radarTitle": "15 维爪格雷达",
-    "topListTitle": "最像你的 TOP 5 毛孩子类型",
+    "title": "爪格实验室｜给宠物做狗格/猫格测试",
+    "subtitle": "根据你家宠物的日常行为、社交反应和黏人方式，测出它属于哪种狗格/猫格人格。",
+    "cta": "开始给TA测爪格",
+    "introNote": "站在宠物主视角答题，3分钟得到你家毛孩子的专属人格定位。",
+    "resultSectionTitle": "TA的宠物人格画像",
+    "radarTitle": "15维狗格/猫格雷达",
+    "topListTitle": "最像TA的 TOP 5 毛孩子类型",
     "source": "源码来源：基于 pingfanfan/SBTI 二次开发",
     "sourceUrl": "https://github.com/pingfanfan/SBTI",
     "ownerLabel": "由 女主人 / 卢欣 主理（可在 data/config.json 中替换）",
-    "funNote": "本测试仅供娱乐与品牌灵感验证，不构成任何心理学、行为学或养宠建议。你不是被定义，你只是更适合某种可爱的叙事。",
-    "funNoteSpecial": "本测试仅供娱乐与传播创意使用。彩蛋人格和兜底人格都是为了增加分享欲，请别拿它当严肃诊断。",
+    "funNote": "本测试用于宠物人格娱乐定位与传播创意参考，不构成行为学诊断或训养建议。",
+    "funNoteSpecial": "本测试仅供娱乐与传播创意使用。隐藏人格与兜底人格是为了增强分享感，不代表专业诊断。",
     "shareFooter": "爪格实验室 · 宠物人格测试",
     "deployCommand": "git clone https://github.com/YOUR_NAME/pawsonality-quiz.git && cd pawsonality-quiz && npm install && npm run dev",
     "deployHint": "复制后即可本地跑起来，再按你的品牌继续改文案、封面和结果页。"
   },
   "quiz": {
-    "normalKicker": "你的本命毛孩子人格",
-    "specialKicker": "隐藏毛孩子人格已触发",
-    "fallbackKicker": "系统为你匹配了稀有体质",
-    "secondaryLabel": "另一种很像你的毛孩子人格"
+    "normalKicker": "你家毛孩子的本命人格",
+    "specialKicker": "你家毛孩子触发了隐藏人格",
+    "fallbackKicker": "系统为TA匹配了稀有混合人格",
+    "secondaryLabel": "另一种也很像TA的毛孩子人格"
   },
   "drinkGate": {
     "questionId": "drink_gate_q1",
