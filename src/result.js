@@ -1,5 +1,6 @@
 import { drawRadar } from './chart.js'
 import { generateShareImage } from './share.js'
+import { getTypeAvatarUrl } from './avatar.js'
 
 const LEVEL_LABEL = { L: '低', M: '中', H: '高' }
 const LEVEL_CLASS = { L: 'level-low', M: 'level-mid', H: 'level-high' }
@@ -14,6 +15,8 @@ export function renderResult(result, userLevels, dimOrder, dimDefs, config, spec
   if (mode === 'special') kicker.textContent = quiz.specialKicker
   else if (mode === 'fallback') kicker.textContent = quiz.fallbackKicker
   else kicker.textContent = quiz.normalKicker
+
+  bindResultPortrait(primary, species)
 
   // Rarity badge
   const rarityEl = document.getElementById('result-rarity')
@@ -106,7 +109,7 @@ export function renderResult(result, userLevels, dimOrder, dimDefs, config, spec
   bindPhotoUploader()
 
   document.getElementById('btn-download').onclick = () => {
-    generateShareImage(primary, userLevels, dimOrder, dimDefs, mode, config)
+    generateShareImage(primary, userLevels, dimOrder, dimDefs, mode, config, species)
   }
 
   const btnAgent = document.getElementById('btn-agent')
@@ -165,4 +168,25 @@ function bindPhotoUploader() {
     preview.style.display = 'block'
     window.__PET_PHOTO_URL__ = url
   }
+}
+
+function bindResultPortrait(primary, species) {
+  const box = document.getElementById('result-portrait-box')
+  const img = document.getElementById('result-portrait')
+  if (!box || !img) return
+
+  const src = getTypeAvatarUrl(species, primary?.code)
+  if (!src) {
+    box.style.display = 'none'
+    img.removeAttribute('src')
+    return
+  }
+
+  box.style.display = ''
+  img.alt = `${primary.cn || primary.code}形象图`
+  img.onerror = () => {
+    box.style.display = 'none'
+    img.onerror = null
+  }
+  img.src = src
 }

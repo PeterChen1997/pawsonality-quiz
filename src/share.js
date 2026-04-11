@@ -1,4 +1,5 @@
 import qrcode from 'qrcode-generator'
+import { getTypeAvatarUrl } from './avatar.js'
 
 const LEVEL_NUM = { L: 1, M: 2, H: 3 }
 const LEVEL_LABEL = { L: '低', M: '中', H: '高' }
@@ -8,11 +9,12 @@ const RARITY_DISPLAY = {
   R:   { text: '常见 · R',     color: '#6b5c56', bg: '#f0e8e3', border: '#c9b9b0' },
 }
 
-export async function generateShareImage(primary, userLevels, dimOrder, dimDefs, mode, config) {
+export async function generateShareImage(primary, userLevels, dimOrder, dimDefs, mode, config, species) {
   const dpr = 2
   const W = 720
   const PAD = 48          // card inner padding (horizontal)
   const CARD_MARGIN = 32  // card outer margin
+  const contentW = W - CARD_MARGIN * 2 - PAD * 2
 
   const footer = config.display.shareFooter || '爪格实验室 · 宠物人格测试'
   const owner = config.display.ownerLabel || ''
@@ -25,11 +27,15 @@ export async function generateShareImage(primary, userLevels, dimOrder, dimDefs,
   // ---- Pass 1: calculate total height ----
   let h = 0
   const petPhotoUrl = window.__PET_PHOTO_URL__
+  const avatarUrl = getTypeAvatarUrl(species, primary?.code)
+  const avatarImage = petPhotoUrl ? null : await loadOptionalImage(avatarUrl)
+  const avatarSize = avatarImage ? getContainSize(avatarImage.width, avatarImage.height, Math.min(320, contentW - 12), 180) : null
 
   h += 64                         // top padding
   h += 28                         // brand title
   h += 32                         // gap
   if (petPhotoUrl) h += 196 + 28  // photo + gap
+  else if (avatarSize) h += avatarSize.height + 24
   h += 24                         // kicker
   h += 24                         // gap
   h += 32                         // rarity badge
@@ -91,7 +97,6 @@ export async function generateShareImage(primary, userLevels, dimOrder, dimDefs,
   ctx.fillStyle = '#ffffff'
   ctx.fill()
 
-  const contentW = cardW - PAD * 2
   let y = cardY + 64
 
   // Brand title
@@ -107,7 +112,7 @@ export async function generateShareImage(primary, userLevels, dimOrder, dimDefs,
     const imgW = 196
     const imgH = 196
     const imgX = (W - imgW) / 2
-    const imgY = y - 28
+    const imgY = y - 10
     roundRect(ctx, imgX, imgY, imgW, imgH, 28)
     ctx.save()
     ctx.clip()
@@ -120,7 +125,24 @@ export async function generateShareImage(primary, userLevels, dimOrder, dimDefs,
     else { sHeight = sw / targetRatio; sy = (sh - sHeight) / 2 }
     ctx.drawImage(img, sx, sy, sWidth, sHeight, imgX, imgY, imgW, imgH)
     ctx.restore()
-    y += 196 + 28 - 28
+    y = imgY + imgH + 18
+  } else if (avatarImage && avatarSize) {
+    const framePad = 10
+    const frameW = avatarSize.width + framePad * 2
+    const frameH = avatarSize.height + framePad * 2
+    const frameX = (W - frameW) / 2
+    const frameY = y - 4
+    roundRect(ctx, frameX, frameY, frameW, frameH, 26)
+    ctx.fillStyle = '#fffaf7'
+    ctx.fill()
+    ctx.drawImage(
+      avatarImage,
+      frameX + framePad,
+      frameY + framePad,
+      avatarSize.width,
+      avatarSize.height
+    )
+    y = frameY + frameH + 14
   }
 
   // Kicker
@@ -432,4 +454,21 @@ function loadImage(src) {
     img.onerror = reject
     img.src = src
   })
+}
+
+async function loadOptionalImage(src) {
+  if (!src) return null
+  try {
+    return await loadImage(src)
+  } catch {
+    return null
+  }
+}
+
+function getContainSize(width, height, maxWidth, maxHeight) {
+  const scale = Math.min(maxWidth / width, maxHeight / height)
+  return {
+    width: Math.round(width * scale),
+    height: Math.round(height * scale),
+  }
 }
